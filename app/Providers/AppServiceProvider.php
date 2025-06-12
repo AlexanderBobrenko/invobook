@@ -12,10 +12,8 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        if ($this->app->environment('local')) {
-            $this->app->register(\Laravel\Telescope\TelescopeServiceProvider::class);
-            $this->app->register(TelescopeServiceProvider::class);
-        }
+        // Remove Telescope for better performance
+        // Only register essential services
     }
 
     /**
@@ -23,6 +21,8 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        Model::unguard();
+        // Use guarded models for better security and performance
+        Model::preventLazyLoading(!app()->isProduction());
+        Model::preventSilentlyDiscardingAttributes(!app()->isProduction());
     }
 }

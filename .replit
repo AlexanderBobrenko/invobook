@@ -8,12 +8,33 @@ channel = "stable-24_05"
 run = ["sh", "-c", "npm run dev"]
 
 [workflows]
-runButton = "Run Laravel"
+runButton = "Run Laravel Optimized"
 
 [[workflows.workflow]]
 name = "Run Laravel"
 author = 43775885
 mode = "sequential"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "php artisan serve --host=0.0.0.0 --port=5000"
+
+[[workflows.workflow]]
+name = "Run Laravel Optimized"
+author = 43775885
+mode = "sequential"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "php artisan config:cache"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "php artisan route:cache"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "php artisan view:cache"
 
 [[workflows.workflow.tasks]]
 task = "shell.exec"
