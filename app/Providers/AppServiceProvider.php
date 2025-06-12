@@ -21,8 +21,20 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        // Use guarded models for better security and performance
-        Model::preventLazyLoading(!app()->isProduction());
-        Model::preventSilentlyDiscardingAttributes(!app()->isProduction());
+        // Оптимизация для бесплатного тарифа
+        if (app()->environment('production')) {
+            // Отключаем ненужные сервисы для экономии ресурсов
+            config(['app.debug' => false]);
+            config(['logging.default' => 'single']);
+
+            // Ограничиваем количество запросов
+            config(['database.connections.sqlite.options' => [
+                \PDO::ATTR_TIMEOUT => 5,
+                \PDO::ATTR_ERRMODE => \PDO::ERRMODE_EXCEPTION,
+            ]]);
+        }
+
+        // Оптимизация для Filament
+        config(['filament.cache_components' => true]);
     }
 }
